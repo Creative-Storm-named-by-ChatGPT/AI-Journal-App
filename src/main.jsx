@@ -1,17 +1,21 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import Header from './components/Header'; // ヘッダーコンポーネントのパスを正しく指定する
-import './index.css';
-import { UIProvider } from '@yamada-ui/react';
-import JournalInput from './components/JournalInput';
+import React from "react";
+import App from "./App";
+import "./index.css";
+import { UIProvider } from "@yamada-ui/react";
+import { NextUIProvider } from "@nextui-org/react";
+import { BrowserRouter } from "react-router-dom";
+import { createRoot } from 'react-dom/client';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const container = document.getElementById('root');
+const root = createRoot(container);
 root.render(
   <React.StrictMode>
+    <BrowserRouter>
       <UIProvider>
-        <Header />
-        <App />
+        <NextUIProvider>
+          <App />
+        </NextUIProvider>
       </UIProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );

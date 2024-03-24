@@ -1,14 +1,58 @@
 import { useState, useEffect } from "react";
 import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import { Header } from "./components/Header";
 import "./App.css";
-import { Button } from "@yamada-ui/react";
-import { collection, getDocs } from "firebase/firestore";
-import { JournalInput } from "./components/JournalInput";
-import { SaveButton } from "./components/save_button";
+import { Button, Loading, Center } from "@yamada-ui/react";
+import {  Routes, Route } from "react-router-dom";
+import Home from './pages/Home.jsx'
+import Login from './pages/Login.jsx'
+import { onAuthStateChanged } from 'firebase/auth';
+import {auth} from './plugins/firebase.js'
 
-/* 
+
+function App() {
+  const [loginState, setLoginState] = useState(0);
+
+  useEffect(() => {
+      onAuthStateChanged(auth, (user) => {
+          if (user) {
+              setLoginState(1);
+          } else {
+              setLoginState(2);
+          }
+      });
+  }, []);
+
+  // ローディング
+  if (loginState == 0) {
+    return (
+      <Center w='100%' height='100svh'>
+        <Loading variant="rings" size="3xl" color="blue.500" />
+      </Center>
+    )
+  }
+
+  // ログイン画面
+  if (loginState == 2) {
+    return (
+      <Login />
+    )
+  }
+
+  // 許可
+  return (
+      <div className="App">
+        <Header />
+        <Routes>
+          <Route path='/' element={<Home />} />
+        </Routes>
+      </div>
+  );
+}
+
+export default App;
+
+/*
 データベースメモ
 
 
@@ -16,6 +60,10 @@ import { SaveButton } from "./components/save_button";
 に日記があります
 
 journalsのアイテム
+
+https://www.npmjs.com/package/uuid
+
+
 
 {
   'id': 'string<アイテムのID uuid>',
@@ -28,60 +76,3 @@ journalsのアイテム
 
 
 */
-async function fetchJournals(db) {
-  const journalsCol = collection(db, "journals");
-  const journalSnapshot = await getDocs(journalsCol);
-  const journalList = journalSnapshot.docs.map((doc) => doc.data());
-  return journalList;
-}
-
-function App() {
-  // 日記のデータを取得する
-  const [journals, setJournals] = useState([]);
-
-  useEffect(() => {
-    async function getJournals() {
-      const journalsFromFirestore = await fetchJournals(collection);
-      setJournals(journalsFromFirestore);
-    }
-
-    getJournals();
-  }, []);
-  // ここまで
-
-  const [count, setCount] = useState(0);
-
-  const [inputValue, setInputValue] = useState("");
-
-  const handleSave = () => {
-    console.log("入力された文字列です:", inputValue); //日記に入力された内容の中身をコンソールに表示
-  };
-
-  const handleClick = () => {
-    setCount(count + 1);
-  };
-
-  return (
-    <div className="App">
-      <Header />
-      <p>You clicked {count} times</p>
-      <Button primary onClick={handleClick}>
-        Click me
-      </Button>
-      <div>
-        {journals.map((journal, index) => (
-          <div key={index}>
-            <p>{journal.content}</p>
-            {/* 他の日記情報もここで表示 */}
-          </div>
-        ))}
-      </div>
-      <div className="App">
-        <JournalInput inputValue={inputValue} setInputValue={setInputValue} />
-        <button onClick={handleSave}>保存</button>
-      </div>
-    </div>
-  );
-}
-
-export default App;
