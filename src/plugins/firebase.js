@@ -1,22 +1,22 @@
 import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, getAuth } from 'firebase/auth';
+import { getAuth, GithubAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_API_KEY,
-  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_APP_ID,
-  measurementId: import.meta.env.VITE_MEASUREMENT_ID
+  apiKey: "AIzaSyALFiIroFy8vWc_Oqr83Ur_PlMujF6_WzM",
+  authDomain: "hackson-69a0a.firebaseapp.com",
+  projectId: "hackson-69a0a",
+  storageBucket: "hackson-69a0a.appspot.com",
+  messagingSenderId: "300845554218",
+  appId: "1:300845554218:web:ecc5555cdfd2dd01f1c153",
+  measurementId: "G-V5H99G2X1G"
 };
 
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
-const google_provider = new GoogleAuthProvider();
 const auth = getAuth(app);
-
+const provider = new GithubAuthProvider();
+provider.addScope('repo');
 export default app;
-export {db, google_provider, auth}
+export {db, provider, auth}

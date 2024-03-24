@@ -1,4 +1,4 @@
-import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore';
+import { collection, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
 import useSWR from 'swr';
 import {db} from '../plugins/firebase.js'
 
@@ -22,8 +22,7 @@ export default function useJournals() {
 async function getJournals() {
     const q = query(
         collection(db, 'journals'),
-        limit(40),
-        orderBy('timestamp', 'desc')
+        orderBy('timestamp', 'desc'),
     );
     const querySnapshot = await getDocs(q);
 
